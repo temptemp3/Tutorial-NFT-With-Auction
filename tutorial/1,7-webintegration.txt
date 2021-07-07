@@ -1,0 +1,233 @@
+In the last section, we made NFT Auction!
+In this section, we’ll replace the command-line interface with a Web interface.
+We will use React.js for this tutorial, but the same principles apply to any Web framework.
+
+Similarly, in this tutorial, we assume that we will be deploying (and testing) with Algorand.
+Reach Web applications rely on the Web browser to provide access to a consensus network account and its associated wallet.
+On Algorand, the standard wallet is Algosigner.
+If you want to test this code, you’ll need to install it and set it up.
+Furthermore, Algosigner does not support multiple active accounts, so if you want to test NFT Auction!
+Locally, you’ll need to have three separate browser instances: one to act as Creator, one to act as Alice and another to act as Bob.
+
+The code in this section does not use the scaffolding from the previous section. Reach comes with a convenience command for deleting scaffolded files:
+  $ ./reach unscaffold
+Similarly, you do not need the previous index.mjs file, because we’ll be writing it completely from scratch to use React. You can run the following command to delete it:
+  $ rm index.mjs
+Or, you can copy the index.rsh file into a new directory and work from there.
+
+This code is supplemented with index.css and some views.
+These details are not specific to Reach, and are fairly trivial, so we will not explain the specifics of those files.
+If you run this locally, you’ll want to download those files.
+Your directory should look like:
+.
+├── index.css
+├── index.js
+├── index.rsh
+├── assets
+└── components
+    ├── AppNavbar.js
+    ├── participants
+        ├── Bidder.js
+        ├── BidderViews.js
+        ├── Creator.js
+        ├── CreatorViews.js
+        └── PlayerViews.js
+    ├── reach
+        ├── Balance.js
+        ├── ConnectWallet.js
+        ├── DeployAttach.js
+        ├── FaucetButton.js
+        └── FaucetModal.js
+    └── views
+        ├── About.js
+        ├── DeployScreen.js
+        └── Home.js
+
+We will focus on frontend-react, because tut-6/index.rsh is the same as previous sections.
+
+We should prepare files we will use before coding frontend.
+
+Firstly, we need to create test accounts like we do in mjs folder.
+
+$[tut6 => src/components/reach/ConnectWallet.js - 1,6]
+On lines 1 and 2, we import react and button. On line 7, we import the compiled backend.
+
+On line 4, we import context file we will hold data.
+
+On lines 5 and 6, we load the stdlib as reach.
+
+
+$[tut6 => src/components/reach/ConnectWallet.js - 8,17]
+On line 9, we include our variables.
+
+On line 12, we use getDefaultAccount, which accesses the default browser account.
+For example, when used with Ethereum, it can discover the currently-selected MetaMask account.
+We will run it on algorand.
+For Algorand, we do not need to connect to any wallet unless we specifically specify it.
+
+
+$[tut6 => src/components/reach/ConnectWallet.js - 24,37]
+On line 24, we control if we create test account.
+If we didn't create account, we code button for this.
+
+On line 37, we export this part of our code.
+
+
+$[tut6 => src/components/reach/FaucetModal.js - 18,35]
+This piece of our code allows us to transfer test algo from faucet to accounts.
+On line 24, we draw the amount of test algo determined from the frontend to the account from the tap.
+
+The FaucetButton.js file helps us to access the faucet in navbar.
+
+The Balance.js file helps us to see our Algo balance in navbar.
+
+Now, we will prepare 2 buttons to deploy and attack the contract.
+
+
+$[tut6 => src/components/reach/DeployAttach.js - 10,23]
+On line 17, we call account.deploy, which triggers a deploy of the contract.
+
+On line 20, we are assigning the contract information to a variable.
+We will use this in the other button to attach to the contract.
+
+On line 22, it allows us to enter the /deploy page after the button is pressed.
+
+
+$[tut6 => src/components/reach/DeployAttach.js - 40,45]
+On lines 40 through 45, we code attach function.
+
+On line 41, we call account.attach with ctcInfo variable we prepared in deploy button.
+
+On line 44, this code push us to bidder page after attaching to contract.
+
+
+We are ready to code frontend. Let's start.
+
+$[tut6 => src/components/views/Home.js - 11,17]
+On lines 13 and 14, we create two variables we will keep NFT id and deadline of auction.
+
+Line 17 controls whether we create account or not.
+If we didn't create account, it shows a button for we will be able to create it.
+[Home Page.png]
+
+$[tut6 => src/components/views/Home.js - 28,47]
+On lines 28 through 41, we code two input boxes to get NFT id and deadline information from the user.
+
+On lines 42 through 47, we call the deploy button we prepared and send the information we receive from the user to the backend.
+
+
+$[tut6 => src/components/views/Home.js - 58,69]
+On line 58, we call attach button we have prepared before.
+
+On lines 65 through 69, if the test account is not created, this part of the code is running.
+[Start Page.png]
+On line 67, we call the ConnectWallet.js code that allows you to create the account we have prepared.
+
+
+We need to see required information to connect after deploying the contract. Let's prepare that.
+
+$[tut6 => src/components/views/DeployScreen.js - 9,27]
+On line 11, we call the ctcInfo variable we have prepared before.
+
+On line 26, we print this information on the screen.
+In this way, bidders can be attached to the contract.
+[Deploy Page.png]
+
+Now we will define our functions.
+We continue without break. 
+Let's start with Creator.
+
+$[tut6 => src/components/participants/Creator.js - 9,27]
+On line 14, variable that we will use to update the page when the functions run.
+
+On line 15, if we are going to send information from the contract to the frontend, we will use this variable.
+
+On line 16, the response returned from the isAuctionOn function is stored.
+
+On line 22, periodically runs the updateBalance function, which we will describe a little later.
+
+On lines 24 and 25, data from the homepage is sent to the backend.
+
+On line 27, we send the information that this user is the Creator to the backend.
+
+
+$[tut6 => src/components/participants/Creator.js - 30,49]
+On lines 30 through 34, this function updates the balance the account has.
+
+On lines 36 through 40, the appState variable is updated when the informTimeout function runs.
+
+On lines 42 through 49, this function allows us to show this bid when the bid is made.
+
+On lines 43 and 44, we edit the format of the bid and bidder information that come from the backend.
+
+
+$[tut6 => src/components/participants/Creator.js - 51,64]
+On lines 51 through 60, we use this function to ask if the owner of the nft wants an auction.
+[IsAuctionOn Page.png]
+On lines 62 through 64, this function allows us to use the response from the isAuctionOn function.
+
+
+$[tut6 => src/components/participants/Creator.js - 66,81]
+On lines 66 through 73, this function allows us to show the winner when the auction is over.
+[Outcome Page.png]
+On lines 76 through 81, it sends the information to the frontend that we will prepare for the functions we have prepared for the creator.
+
+Creator.js is ready.
+Now we prepare the frontend images of these functions in the PlayerViews.js file.
+But we will make their working order in CreatorViews.js file.
+Let's look at it now.
+
+
+$[tut6 => src/components/participants/CreatorViews.js - 7,19]
+On lines 7 through 19, we use the switch case structure to add dynamism to the screen.
+Depending on the appState variable from Creator.js, we run the images prepared in playerViews.js.
+
+Bidder.js is almost the same as Creator.js.
+It just has an extra getBid function.
+Let's prepare it now.
+
+$[tut6 => src/components/participants/Bidder.js - 75,88]
+On lines 75 through 84, this function allows to get bids from bidders.
+[Bid Page.png]
+On lines 86 through 88, this function updates resIsAuctionOn when response from getBid function.
+
+
+BidderViews.js is almost the same as CreatorViews.js.
+
+Everything is ready to run our contract on the web interface.
+
+Node.js must be installed in your system.
+Use $ npm install package.json to install dependencies
+You need a copy of reach to get the devnet running.
+If you don't have one already
+$ cd src/
+$ curl https://raw.githubusercontent.com/reach-sh/reach-lang/master/reach -o reach ; chmod +x reach
+$ ./reach compile
+After that running $ REACH_CONNECTOR_MODE=ALGO ./reach devnet (which runs the ALGORAND devnet inside the terminal)
+go to the parent directory and start the React app
+$ cd ..
+$ npm run start
+This will run the web-app in the localhost:3000
+
+Now our implementation of NFT With Auction System is live in the browser!
+We can leverage callbacks in the participant interact interface to display to and gather information from the user, through any Web UI framework of our choice.
+If we wanted to deploy this application to the world, then we would take the static files that React produces and host them on a Web server.
+These files embed your compiled Reach program, so there’s nothing more to do than provide them to the world.
+
+Let’s review what we’ve done through this tutorial:
+
+In part one, we saw how Reach can be installed with one command on almost any system without any dependencies beyond what most developers have anyways.
+We also saw how Reach programs have a succinct setup that easily abstracts the details of your chosen consensus network into a couple lines and three key API calls.
+
+In part two, we saw how Reach allows developers to focus on the business logic of their decentralized application and look past the nitty-gritty details of blockchain interaction and protocol design.
+
+In part three, we saw that it is just as easy for Reach to network transactions as it is to deal with data sharing.
+We also learned how to use the while loop, which can be used in many applications.
+
+In part four, we introduce you to the Reach automatic formal verification engine and its ability to ensure our program doesn’t have entire categories of flaws and security vulnerabilities.
+
+In part five, we have completed the necessary shortcomings for our Reach application to be ready.
+
+In part six, we saw how to deploy your Reach program as a fully decentralized Web application.
+
+Despite having done so much, this is really just a brief introduction to what is possible with Reach.

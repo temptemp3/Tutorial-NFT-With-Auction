@@ -1,0 +1,112 @@
+We end our shortcomings by asking the owner of Nft if he wants an auction.
+Let's start by editing our reach code.
+
+$[tut5=>index.rsh-4,9]
+Line 8 provides a method: isAuctionOn, which returns a boolean.
+
+$[tut5=>index.rsh-34,51]
+Line 34, we add a new variable.
+With this variable, we will keep the information whether the auction is requested or not.
+
+Lines 39 through 45 are checking the auction request.
+The auctionOn variable is false at startup and after every owner change.
+According to the response from the isAuctionOn function, the program terminates or continues.
+
+We update lines 69, 74 and 84.
+
+Let's also make the necessary arrangements to tie these changes to the Javascript frontend.
+
+$[tut5=>index.mjs-33,56]
+Line 34, we were ending the program with the if condition we placed inside the seeOutcome function.
+Since it is no longer needed, we remove and update it.
+
+Lines 47 through 56 define isAuctionOn function.
+
+Lines 49 through 52, return false so that the program terminates after the second auction.
+
+Let’s run the program and see what happens:
+
+$ ./reach run
+Creator has launched the auction.
+Bob 's Bid: 1 ALGO
+Alice 's Bid: 1 ALGO
+Creator saw the bid;
+Bidder:  Alice
+Bid: 1
+Alice saw the bid;
+Bidder:  Alice
+Bid: 1
+Bob saw the bid;
+Bidder:  Alice
+Bid: 1
+Alice 's Bid: 2 ALGO
+Creator saw the bid;
+Bidder:  Alice
+Bid: 2
+Alice saw the bid;
+Bidder:  Alice
+Bid: 2
+Bob saw the bid;
+Bidder:  Alice
+Bid: 2
+Bob 's Bid: 3 ALGO
+Creator saw the bid;
+Bidder:  Bob
+Bid: 3
+Alice saw the bid;
+Bidder:  Bob
+Bid: 3
+Bob saw the bid;
+Bidder:  Bob
+Bid: 3
+Alice 's Bid: 4 ALGO
+Creator saw the bid;
+Bidder:  Alice
+Bid: 4
+Alice saw the bid;
+Bidder:  Alice
+Bid: 4
+Bob saw the bid;
+Bidder:  Alice
+Bid: 4
+Bob 's Bid: 5 ALGO
+Creator saw the bid;
+Bidder:  Bob
+Bid: 5
+Bob saw the bid;
+Bidder:  Bob
+Bid: 5
+Alice saw the bid;
+Bidder:  Bob
+Bid: 5
+Alice 's Bid: 6 ALGO
+Creator saw the bid;
+Bidder:  Alice
+Bid: 6
+Alice saw the bid;
+Bidder:  Alice
+Bid: 6
+Bob saw the bid;
+Bidder:  Alice
+Bid: 6
+Creator Saw The Winner:  Alice
+Alice Saw The Winner:  Alice
+Bob Saw The Winner:  Alice
+Alice has launched the auction.
+Bob 's Bid: 1 ALGO
+Creator saw the bid;
+Bidder:  Bob
+Bid: 1
+Alice saw the bid;
+Bidder:  Bob
+Bid: 1
+Bob saw the bid;
+Bidder:  Bob
+Bid: 1
+Creator Saw The Winner:  Bob
+Bob Saw The Winner:  Bob
+Alice Saw The Winner:  Bob
+Bob has finished auction.
+
+Until this step, we made a Javascript command-line interface for our Reach program.
+In the next step, we’ll replace this with a Web interface for the same Reach program.
