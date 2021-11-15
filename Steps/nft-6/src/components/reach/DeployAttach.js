@@ -40,7 +40,7 @@ export const AttachButton = () => {
     const handleShow = () => setShow(true);
     const handleClose = () => setShow(false);
     const attach = async (ctcInfo) => {
-        const ctc = await account.attach(Backend, JSON.parse(ctcInfo));
+        const ctc = await account.contract(Backend, JSON.parse(ctcInfo));
         setCtc([ctc]);
         console.log("Attached to the contract");
         history.push("/app/bidder");

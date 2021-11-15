@@ -1,4 +1,4 @@
-import { React, Component } from "react";
+import React, { Component } from "react";
 import * as Backend from "../../build/index.main.mjs";
 import { Context } from "../../Context";
 import BidderViews from "./BidderViews";
@@ -21,8 +21,11 @@ export class Bidder extends Component {
 
     componentDidMount() {
         const [, , , , , , ctc, , , ,] = this.context;
+        console.log(this.context)
         this.interval = setInterval(async () => this.updateBalance(), 5000);
-        Backend.Bidder(ctc[0], this);
+        console.log("here")
+        console.log(ctc)
+        Backend.Bidder(ctc, this);
     }
 
     async updateBalance() {        
