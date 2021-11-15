@@ -14,7 +14,8 @@ export const DeployButton = ({ ctcArgs }) => {
 
     const deploy = async () => {
         setShow(true);
-        const ctc = account.deploy(Backend);
+        const ctc = account.contract(Backend);
+        // TODO: add constuctor participant
         setCtc([ctc]);
         setCtcArgs(ctcArgs);
         const ctcInfo = JSON.stringify(await ctc.getInfo(), null, 2);
