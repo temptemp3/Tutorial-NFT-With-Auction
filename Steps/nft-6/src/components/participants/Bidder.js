@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { React, Component } from "react";
 import * as Backend from "../../build/index.main.mjs";
 import { Context } from "../../Context";
 import BidderViews from "./BidderViews";
