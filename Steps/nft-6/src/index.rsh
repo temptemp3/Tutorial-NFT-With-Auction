@@ -10,7 +10,9 @@ const Common =
 export const main =
   Reach.App(
     {},
-    [Participant('Creator', {
+    [
+      Participant('Constructor', Common),
+      Participant('Creator', {
       ...Common,
       getId: UInt,
       deadline: UInt,
@@ -23,8 +25,10 @@ export const main =
        owner: Address,
      }),
     ],
-
-    (Creator, Bidder, vNFT) => {
+    (Constructor, Creator, Bidder, vNFT) => {
+      Constructor
+        .publish()
+      commit()
       Creator.only(() => {
           const id = declassify(interact.getId);
           const deadline = declassify(interact.deadline);
@@ -38,13 +42,13 @@ export const main =
         if(auctionOn === false) {
           commit();
 
-          each([Creator, Bidder], () => {
+          each([Constructor, Creator, Bidder], () => {
             const isAuctionOn = this === owner ? declassify(interact.isAuctionOn()) : true;
           });
 
           Anybody.publish(isAuctionOn).when(owner == this).timeout(false);
           if (!isAuctionOn) {
-            each([Creator, Bidder], () => {
+            each([Constructor, Creator, Bidder], () => {
               interact.seeOutcome(price,owner);
             });
             [owner, price, lastBidder, keepGoing, auctionOn] = [owner, price, lastBidder, false, auctionOn];            
@@ -61,12 +65,12 @@ export const main =
         Bidder.publish(bid, winner)
           .when(bid>price && this !== lastBidder)
           .timeout(relativeTime(deadline), () => {
-            each([Creator, Bidder], () => {
+            each([Constructor, Creator, Bidder], () => {
               interact.seeOutcome(price, lastBidder);
             });
 
             Bidder.pay(price).when(lastBidder == this).timeout(relativeTime(10), () => {
-              each([Creator, Bidder], () => {
+              each([Constructor, Creator, Bidder], () => {
                 interact.informTimeout();
               });
 
@@ -81,7 +85,7 @@ export const main =
           })
         commit();
 
-        each([Creator, Bidder], () => {
+        each([Constructor, Creator, Bidder], () => {
           interact.showBid(bid, winner);
         });
 

@@ -18,6 +18,7 @@ export const DeployButton = ({ ctcArgs }) => {
         // TODO: add constuctor participant
         setCtc([ctc]);
         setCtcArgs(ctcArgs);
+        Backend.Constructor(ctc, {})
         const ctcInfo = JSON.stringify(await ctc.getInfo(), null, 2);
         setCtcInfo([ctcInfo]);
         history.push('/deploy');
