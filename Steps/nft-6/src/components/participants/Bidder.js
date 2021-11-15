@@ -25,7 +25,7 @@ export class Bidder extends Component {
         this.interval = setInterval(async () => this.updateBalance(), 5000);
         console.log("here")
         console.log(ctc)
-        Backend.Bidder(ctc, this);
+        Backend.Bidder(ctc[0], this);
     }
 
     async updateBalance() {        
